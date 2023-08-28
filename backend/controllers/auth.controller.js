@@ -224,6 +224,7 @@ const sendTokenResponse = (user, res) => {
       expires: new Date(Date.now() + oneDay),
       secure: process.env.NODE_ENV === 'production',
       signed: true,
+      sameSite: 'strict',
       httpOnly: true
     };
   
@@ -232,6 +233,9 @@ const sendTokenResponse = (user, res) => {
       .cookie('token', token, options)
       .json({
         success: true,
-        token
+        token,
+        _id: user.id,
+        username: user.username,
+        email: user.email
       });
 };
