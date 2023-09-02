@@ -53,8 +53,7 @@ exports.signup = async (req, res) => {
     // send verification email here
 
     res.status(StatusCodes.CREATED).json({
-        msg: 'Success! Please check your email to verify account',
-        data: user
+        msg: 'Success! Please check your email to verify account'
     });
 };
 
@@ -232,7 +231,6 @@ const sendTokenResponse = (user, res) => {
       .status(StatusCodes.OK)
       .cookie('token', token, options)
       .json({
-        success: true,
         token,
         _id: user.id,
         username: user.username,

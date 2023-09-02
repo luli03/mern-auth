@@ -2,16 +2,21 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
+
 import { useDispatch, useSelector} from 'react-redux';
-import { useSigninMutation } from '../slices/userApiSplice';
-import { setCredentials } from '../slices/authSlice';
+import { useSigninMutation } from '../redux/services/authApi';
+import { setCredentials } from '../redux/features/authSlice';
 
-const LoginScreen = () => {
-    const [user, setUser] = useState('');
-    const [password, setPassword] = useState('');
-
+const Signin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const eToken = '$2a$10$IVR1YXppFqVnfWOJoha97u5.39hjOmbU32rjKnpCNrz4y0Q5Js/mG';
+    const eEmail = 'joedjoven02@gmail.com';
+    const path = `/verify-email?email=${eEmail}&verificationToken=${eToken}`;
+
+    const [user, setUser] = useState('');
+    const [password, setPassword] = useState('');
 
     const [signin, {isLoading}] = useSigninMutation();
 
@@ -23,18 +28,20 @@ const LoginScreen = () => {
         }
     }, [navigate, userInfo])
 
-    const submitHandler = async (e) => {
+
+    const submitHandler = (e) => {
         e.preventDefault();
-        try {
-            const res = await signin({user, password}).unwrap();
-            dispatch(setCredentials({...res}));
-            navigate('/');
-        } catch (err) {
-            console.log(err?.data?.message || err.error());
-        }
+
+        signin({user, password})
+        .unwrap()
+        .then((payload) => {
+            dispatch(setCredentials({...payload}))
+        })
+        .catch((error) => console.log(error.msg))
+
     }
 
-    return(
+    return (
         <FormContainer>
             <h1>Sign In</h1>
             <Form onSubmit={submitHandler}>
@@ -67,10 +74,13 @@ const LoginScreen = () => {
                         New User?
                         <Link to='/signup'>Click here to Sign up.</Link>
                     </Col>
+
                 </Row>
+                
+                <Link to={path}>sample click from email</Link>
             </Form>
         </FormContainer>
     )
 }
 
-export default LoginScreen
+export default Signin
