@@ -1,17 +1,40 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 
-const RegisterScreen = () => {
+import { useSelector} from 'react-redux';
+import { useSignupMutation } from '../redux/services/authApi';
+
+const Signup = () => {
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
 
+    const [signup, {isLoading}] = useSignupMutation();
+
+    const {userInfo} =useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if(userInfo){
+            navigate('/');
+        }
+    }, [navigate, userInfo])
+
+
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log('a');
+        const signup_data = { username, email, password };
+
+        signup(signup_data)
+        .unwrap()
+        .then((payload) => {
+            navigate('/signin')
+        })
+        .catch((error) => console.log(error.msg))
     }
 
     return(
@@ -73,4 +96,4 @@ const RegisterScreen = () => {
     )
 }
 
-export default RegisterScreen
+export default Signup

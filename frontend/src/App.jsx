@@ -1,4 +1,4 @@
-import {Outlet} from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import Header from './components/Header';
 
@@ -9,7 +9,6 @@ const App = () => {
       <Container className='my-10'>
         <Outlet />
       </Container>
-      
     </>
   )
 }
